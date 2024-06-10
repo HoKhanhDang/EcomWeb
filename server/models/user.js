@@ -1,5 +1,7 @@
 const mongoose = require('mongoose'); // Erase if already required
-let bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const product = require('./product');
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
     firstName:{
@@ -11,7 +13,7 @@ var userSchema = new mongoose.Schema({
         required:true,
     },
     email:{
-        type:String,
+        type:String,    
         required:true,
         unique:true,
     },
@@ -28,14 +30,23 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    cart:{
-        type:Array,
-        default:[],
-    },
+    cart:[
+        {
+            product:
+            {
+                type:mongoose.Schema.Types.ObjectId,
+                ref:'Product'
+            }
+            ,
+            quantity:{type:Number, default:0},
+            color:{type:String, enum:['Black','White','Red','Blue','Green']},
+
+        }
+              
+    ],
     address:[
         {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Address'
+            type:String
         }
     ],
     wishlist:[
@@ -83,7 +94,13 @@ userSchema.pre('save',async function(next){
 userSchema.methods = {
     matchPassword: async function(enteredPassword){
     return await bcrypt.compare(enteredPassword,this.password);
-    }
+    },
+    createResetPasswordToken: async function(){
+        const resetToken = crypto.randomBytes(20).toString('hex');
+        this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+        return resetToken;
+    },
 }
 
 
