@@ -28,7 +28,7 @@ var userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        required:true,
+        default:'user',
     },
     cart:[
         {
@@ -40,15 +40,13 @@ var userSchema = new mongoose.Schema({
             ,
             quantity:{type:Number, default:0},
             color:{type:String, enum:['Black','White','Red','Blue','Green']},
-
+            internal:{type:String, enum:['16GB','32GB','64GB','128GB','256GB']},
         }
               
     ],
-    address:[
-        {
-            type:String
-        }
-    ],
+    address:{
+        type:String,
+    },
     wishlist:[
         {
             type:mongoose.Schema.Types.ObjectId,

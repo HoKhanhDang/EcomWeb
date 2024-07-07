@@ -9,5 +9,5 @@ const {
 
 router.post('/create',verifyToken, createOrder);
 router.put('/status/:orderId',verifyToken, changeStatus);
-router.get('/',verifyToken, getOrders);
+router.get('/get',verifyToken, getOrders);
 module.exports = router;

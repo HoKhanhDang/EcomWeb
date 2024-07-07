@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const data = require('../data/data.json');
+const data = require('../data/product.json');
 const slugify = require('slugify');
 
 const insertProduct = async (req, res) => {
@@ -9,12 +9,13 @@ const insertProduct = async (req, res) => {
             title: product.title,
             slug: slugify(product.title),
             description: product.description,
-            price: parseFloat(product.price.replace('$', '')),
+            price: product.price,
             category: product.category,
             brand: product.brand,
             image: product.image,
             quantity: Math.round(Math.random() * 100),
             color: product.color,
+            internal: product?.internal
         });
     });
 

@@ -7,6 +7,17 @@ var categorySchema = new mongoose.Schema({
         required:true,
         unique:true,
     },
+    image:{
+        type:String,
+    },
+    slug:{
+        type:String,
+        lowercase:true,
+    },
+    brand:{
+        type: Array,     
+    }
+    
    
 });
 

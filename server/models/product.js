@@ -65,6 +65,11 @@ var productSchema = new mongoose.Schema({
             type:String
         }       
     }],
+    internal:[{
+        label:{
+            type:String
+        }       
+    }],
 
    
 });

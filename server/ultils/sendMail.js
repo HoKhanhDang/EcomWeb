@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const nodemailer = require('nodemailer');
 
-const SendMail =  asyncHandler(async (email,html) => {
+const SendMail =  asyncHandler(async (email,html, title) => {
     let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -15,7 +15,7 @@ const SendMail =  asyncHandler(async (email,html) => {
     let infor = await transporter.sendMail({
         from: process.env.EMAIL,
         to: email,
-        subject: 'Reset Password',
+        subject: title,
         html: html
     });     
 

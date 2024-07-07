@@ -10,7 +10,8 @@ const {
     updateProduct,
     deleteProduct,
     ratingProduct,
-    uploadImage
+    uploadImage,
+    getAllProducts
 } =  require('../controller/product');
 
 const {insertProduct} = require('../controller/insertProduct');
@@ -19,6 +20,8 @@ router.post('/addProduct', addProduct);
 router.get('/getProducts', getProducts);
 router.get('/getProductBySlug/:_id', getProductBySlug);
 router.get('/getProductByID/:_id', getProductByID);
+router.get('/getAll',getAllProducts)
+
 router.put('/updateProduct/:_id', updateProduct);
 router.delete('/deleteProduct/:_id', deleteProduct);
 router.put('/ratingProduct', verifyToken, ratingProduct);

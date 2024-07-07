@@ -1,0 +1,183 @@
+
+    [
+     {
+      "name": "Smartphone",
+      "nameCompany": [
+       {
+        "name": "Apple",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Samsung",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "LG",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Asus",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Nokia",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "BlackBerry",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/mobile-devices_300x.jpg?v=1613166682"
+     },
+     {
+      "name": "Tablet",
+      "nameCompany": [
+       {
+        "name": "iPad",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Samsung",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Acer",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Asus",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Lenovo",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Haier",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/pc-1_300x.jpg?v=1613166682"
+     },
+     {
+      "name": "Laptop",
+      "nameCompany": [
+       {
+        "name": "Asus",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Dell",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Acer",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Lenovo",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "HP",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Macbook",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/laptop_300x.jpg?v=1613166811"
+     },
+     {
+      "name": "Accessories",
+      "nameCompany": [
+       {
+        "name": "Smartswatches",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Headphone",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Bluetooth",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Keyboard",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Mouse",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Cases",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/headphone_8467ba67-70c7-4977-b57e-8847d56549c6_300x.jpg?v=1613166811"
+     },
+     {
+      "name": "Television",
+      "nameCompany": [
+       {
+        "name": "Apple",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Samsung",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "LG",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Asus",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Nokia",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "BlackBerry",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/television_300x.jpg?v=1613166810"
+     },
+     {
+      "name": "Printer",
+      "nameCompany": [
+       {
+        "name": "iPad",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Samsung",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Acer",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Asus",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Lenovo",
+        "url": "https://digital-world-2.myshopify.com/"
+       },
+       {
+        "name": "Haier",
+        "url": "https://digital-world-2.myshopify.com/"
+       }
+      ],
+      "image": "https://digital-world-2.myshopify.com/cdn/shop/files/printer_300x.jpg?v=1613166810"
+     }
+    ]

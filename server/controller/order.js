@@ -6,33 +6,20 @@ const asyncHandler = require('express-async-handler');
 
 const createOrder = asyncHandler(async (req, res) => {
     const {_id} = req.user;
-    if (!_id) return res.status(400).json({ message: "Please provide all fields" });    
+    if (!_id) return res.status(400).json({ message: "Please provide id" });    
 
-    const { paymentMethod } = req.body;
-    if ( !paymentMethod) return res.status(400).json({ message: "Please provide all fields" });
-
-    let totalPrice = 0;
-
-    const cart = await User.findOne({ _id: _id }).select("cart").populate("cart.product", "title price");
-    console.log('cart',cart);
-    if (!cart) return res.status(400).json({ message: "No cart found" });
-
-    totalPrice=  cart.cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-
-    if (req.body.coupon) {
-        const couponData = await Coupon.findById({ _id: req.body.coupon });
-        if (!couponData) return res.status(400).json({ message: "Coupon not found" });
-
-        totalPrice = totalPrice - totalPrice * couponData.discount / 100;
-    }
+    const { totalPrice, product, status, address, note } = req.body;
+    console.log(req.body);
+    if (!totalPrice || !product || !status || !address) return res.status(400).json({ message: "Please provide all fields" });
 
     const deleteCart = await User.findByIdAndUpdate({ _id: _id }, { $set: { cart: [] } });
 
-
     const response = await Order.create({
-        products: cart.cart,
+        products: product,
+        status,
         totalPrice,
-        paymentMethod,
+        address,
+        note,
         orderedBy: _id,
     });
     

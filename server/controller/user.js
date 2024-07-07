@@ -4,23 +4,50 @@ const { generateToken, generateRefreshToken } = require('../middlewares/jwt');
 const jwt = require('jsonwebtoken');
 const {SendMail} = require('../ultils/sendMail');
 const crypto = require('crypto');
-const product = require('../models/product');
+const makeToken = require('uniqid');
 
 const register = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
-    if (!firstName || !lastName || !email || !password) {
+    const { firstName, lastName, email, password, mobile } = req.body;
+    if (!firstName || !lastName || !email || !password || !mobile ) {
         res.status(400);
         throw new Error('All fields are required');
     }
+    const isExist = await User.find({email});
+    if (isExist.length > 0) {
+        res.status(400);    
+        throw new Error('Email already exists');
+    }
 
-    const response = await User.create(req.body);
+    const registerToken = makeToken();
+    res.cookie('registerToken',{registerToken ,user: req.body}, {httpOnly: true, maxAge: 15*60*1000});
+    
+    const html = `Click vào link để xác nhận đăng ký tài khoản: <a href="${process.env.URL_SERVER}/api/user/finalRegister/${registerToken}">Click here</a>`;
+    const rs = await SendMail(email, html, title='Verify Email');
 
     return res.status(200).json({
         status: 'success',
-        data: response,
-        success: response ? true : false,
+        data: rs,
     });
 });
+
+const finalRegister = async (req, res) => {
+    const cookie = req.cookies;
+    console.log(cookie);
+    const {registerToken} = req.params;
+    if (!registerToken) {
+        return res.redirect(`${process.env.CLIENT_URL}/registerFinal/failed`);
+    }
+    
+    if (registerToken !== cookie.registerToken.registerToken) {
+        res.clearCookie('registerToken');
+        return res.redirect(`${process.env.CLIENT_URL}/registerFinal/failed`);
+    }else {
+        const rs = await User.create(cookie.registerToken.user);
+        res.clearCookie('registerToken');
+        return res.redirect(`${process.env.CLIENT_URL}/registerFinal/success`);
+    }
+
+}
 
 const login = asyncHandler(async (req, res) => {
 
@@ -33,6 +60,11 @@ const login = asyncHandler(async (req, res) => {
     }
 
     const response = await User.findOne({email});
+    console.log('response',response);
+
+    if (!response) {
+        throw new Error('Account do not exist');
+    }
 
     const accessToken = generateToken(response._id, response.role);
     const refreshToken = generateRefreshToken(response._id);
@@ -60,7 +92,9 @@ const login = asyncHandler(async (req, res) => {
 const getUser = asyncHandler(async (req, res) => {
     const {_id} = req.user;
 
-    const response = await User.findById(_id);
+    const response = await User.findById(_id).populate('cart.product','title price image');
+
+    console.log('response',response.cart);
 
     return res.status(200).json({
         status: 'success',
@@ -118,7 +152,7 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.body;
     console.log(email);
     const user = await User.findOne({ email });
 
@@ -129,9 +163,11 @@ const resetPassword = asyncHandler(async (req, res) => {
     const token = await user.createResetPasswordToken(user, res);
     user.save({ validateBeforeSave: false });
 
-    const html = `Click vào link để reset password: <a href="${process.env.URL_SERVER}/api/user/reset-password/${token}">Reset Password</a>`;
+    res.cookie('resetPasswordToken', {token, email:email}, {httpOnly: true, maxAge: 15*60*1000});
+    const html = `Click vào link để reset password: <a href="${process.env.CLIENT_URL}/resetPassword/${email}">Reset Password</a>`;
     
-    const rs = await SendMail(email, html);
+    const rs = await SendMail(email, html, title='Reset Password');
+
     return res.status(200).json({
         status: 'success',
         data: rs,
@@ -140,7 +176,9 @@ const resetPassword = asyncHandler(async (req, res) => {
 })
 
 const verifyResetPasswordToken = asyncHandler(async (req, res) => {
-    const { password , token } = req.body;
+    const { password } = req.body;
+    const cookie = req.cookies;
+    const token = cookie.resetPasswordToken.token;
     if (!password || !token) {
         res.status(400);
         throw new Error('All fields are required');
@@ -151,10 +189,12 @@ const verifyResetPasswordToken = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Invalid token');
     }
+  
     user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
     await user.save();
+    res.clearCookie('resetPasswordToken');
     return res.status(200).json({
         status: 'success',
         message: 'Password reset successfully',
@@ -237,14 +277,40 @@ const updateAddress = asyncHandler(async (req, res) => {
     });
 });
 
-const updateCart = asyncHandler(async (req, res) => {
-    const { _id } = req.params;
+const updateQuantity = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const {pid , quantity} = req.body;
     if (!_id) {
         res.status(400);
         throw new Error('ID is required');
     } 
-    const { pid , quantity , color } = req.body;
-   
+    console.log(pid , quantity);
+    const response = await User.findOneAndUpdate(
+        { cart: { $elemMatch: { product: pid } }},
+        {
+            $set: {
+                "cart.$.quantity": quantity,
+            }
+        },
+        { new: true }
+    );
+    console.log('response',response);
+
+    return res.status(200).json({
+        status: 'success',
+        data: response,
+        success: response ? true : false,
+    });
+});
+
+const updateCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+
+    if (!_id) {
+        res.status(400);
+        throw new Error('ID is required');
+    } 
+    const { pid , quantity , color , internal } = req.body;
     const user = await User.findById(_id).select('cart');
     const alreadyCart = user?.cart?.find(item => item.product.toString() === pid);
     if (alreadyCart) {
@@ -254,7 +320,8 @@ const updateCart = asyncHandler(async (req, res) => {
             {
                 $set: {
                     "cart.$.quantity": quantity,
-                    "cart.$.color": color
+                    "cart.$.color": color,                   
+                    "cart.$.internal": internal
                 }
             },
             { new: true }
@@ -274,7 +341,8 @@ const updateCart = asyncHandler(async (req, res) => {
                 cart: {
                     product: pid,
                     quantity: quantity,
-                    color: color
+                    color: color,
+                    internal: internal
                 }
             }
         }, { new: true });
@@ -285,6 +353,28 @@ const updateCart = asyncHandler(async (req, res) => {
         });
     }
     
+});
+
+const deleteCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { pid } = req.params;
+    console.log('pid',pid);
+    if (!_id) {
+        res.status(400);
+        throw new Error('ID is required');
+    } 
+    const response = await User.findByIdAndUpdate(_id, {
+        $pull: {
+            cart: {
+                product: pid
+            }
+        }
+    }, { new: true });
+    return res.status(200).json({
+        status: 'success',
+        data: response,
+        success: response ? true : false,
+    });
 });
 
 
@@ -302,5 +392,8 @@ module.exports = {
     updateUser,
     updateUserByID,
     updateAddress,
-    updateCart
+    updateCart,
+    finalRegister,
+    deleteCart,
+    updateQuantity
 };

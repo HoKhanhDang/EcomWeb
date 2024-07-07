@@ -4,7 +4,7 @@ const addCategory = async (req, res) => {
     const { title } = req.body;
     if (!title) return res.status(400).json({ message: "Please provide category title" });
 
-    const category = await Category.create({ title });
+    const category = await Category.create(req.body);
 
     return res.status(201).json({
         status: 'success',
